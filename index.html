@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>План Лунгрена - Тренувальна програма</title>
+    <meta name="description" content="Тренувальна програма за планом Дольфа Лунгрена з нагадуваннями та відстеженням прогресу">
+    <meta name="theme-color" content="#667eea">
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="План Лунгрена">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Локальні іконки замість CDN */
+        .fas, .fa {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+        }
+        .fas::before, .fa::before {
+            content: '';
+        }
+        /* Заміна іконок на Unicode символи */
+        .fa-dumbbell::before { content: '💪'; }
+        .fa-calendar-day::before { content: '📅'; }
+        .fa-chart-line::before { content: '📈'; }
+        .fa-clipboard-list::before { content: '📝'; }
+        .fa-calendar-week::before { content: '📆'; }
+        .fa-cog::before { content: '⚙️'; }
+        .fa-play::before { content: '▶️'; }
+        .fa-info-circle::before { content: 'ℹ️'; }
+        .fa-save::before { content: '💾'; }
+        .fa-bell::before { content: '🔔'; }
+        .fa-clock::before { content: '⏰'; }
+        .fa-running::before { content: '🏃'; }
+        .fa-fire::before { content: '🔥'; }
+        .fa-target::before { content: '🎯'; }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="app-title">
+                    <i class="fas fa-dumbbell"></i>
+                    План Лунгрена
+                </h1>
+                <div class="current-time" id="currentTime"></div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Today's Workout -->
+            <section class="workout-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-calendar-day"></i> Сьогоднішнє тренування</h2>
+                    <div class="date-display" id="currentDate"></div>
+                </div>
+                
+                <div class="workout-card" id="todayWorkout">
+                    <div class="workout-info">
+                        <h3 id="workoutTitle">Завантаження...</h3>
+                        <p id="workoutDescription">Підготовка до тренування...</p>
+                    </div>
+                    <div class="workout-actions">
+                        <button class="btn btn-primary" id="startWorkout">
+                            <i class="fas fa-play"></i> Почати тренування
+                        </button>
+                        <button class="btn btn-secondary" id="viewDetails">
+                            <i class="fas fa-info-circle"></i> Деталі
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Progress Tracking -->
+            <section class="progress-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-chart-line"></i> Статистика тренувань</h2>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-running"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>Тижнів тренувань</h3>
+                            <div class="stat-value" id="weeksCount">0</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-fire"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>Тренувань цього тижня</h3>
+                            <div class="stat-value" id="weeklyWorkouts">0</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-target"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>Поточна фаза</h3>
+                            <div class="stat-value" id="currentPhase">Фаза 1</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Workout Log -->
+            <section class="log-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-clipboard-list"></i> Щоденник тренувань</h2>
+                </div>
+                
+                <div class="log-form">
+                    <div class="form-group">
+                        <label for="workoutDate">Дата:</label>
+                        <input type="date" id="workoutDate" class="form-input">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="workoutType">Тип тренування:</label>
+                        <select id="workoutType" class="form-input">
+                            <option value="">Виберіть тип</option>
+                            <option value="running">Біг</option>
+                            <option value="strength">Силове</option>
+                            <option value="core">Кор</option>
+                            <option value="mobility">Мобільність</option>
+                            <option value="rest">Відпочинок</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="workoutDuration">Тривалість (хв):</label>
+                        <input type="number" id="workoutDuration" class="form-input" min="0" max="300">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="workoutNotes">Нотатки:</label>
+                        <textarea id="workoutNotes" class="form-input" rows="3" placeholder="Як пройшло тренування?"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="workoutRating">Оцінка (1-10):</label>
+                        <input type="number" id="workoutRating" class="form-input" min="1" max="10">
+                    </div>
+                    
+                    <button class="btn btn-success" id="saveWorkout">
+                        <i class="fas fa-save"></i> Зберегти тренування
+                    </button>
+                </div>
+                
+                <div class="workout-history">
+                    <h3>Історія тренувань</h3>
+                    <div class="history-list" id="workoutHistory">
+                        <!-- Workout history will be populated here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Weekly Schedule -->
+            <section class="schedule-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-calendar-week"></i> Тижневий графік</h2>
+                </div>
+                
+                <div class="schedule-grid" id="weeklySchedule">
+                    <!-- Weekly schedule will be populated here -->
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section class="settings-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-cog"></i> Налаштування</h2>
+                </div>
+                
+                <div class="settings-form">
+                    <div class="form-group">
+                        <label for="notificationTime">Час нагадування:</label>
+                        <input type="time" id="notificationTime" class="form-input" value="08:00">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="notificationsEnabled" checked>
+                            <span class="checkmark"></span>
+                            Увімкнути сповіщення
+                        </label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Дата початку програми:</label>
+                        <div class="start-date-display" id="startDateDisplay"></div>
+                    </div>
+                    
+                    <button class="btn btn-primary" id="saveSettings">
+                        <i class="fas fa-save"></i> Зберегти налаштування
+                    </button>
+                </div>
+            </section>
+        </main>
+
+        <!-- Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-btn active" data-section="workout">
+                <i class="fas fa-dumbbell"></i>
+                <span>Тренування</span>
+            </button>
+            <button class="nav-btn" data-section="progress">
+                <i class="fas fa-chart-line"></i>
+                <span>Прогрес</span>
+            </button>
+            <button class="nav-btn" data-section="log">
+                <i class="fas fa-clipboard-list"></i>
+                <span>Щоденник</span>
+            </button>
+            <button class="nav-btn" data-section="schedule">
+                <i class="fas fa-calendar"></i>
+                <span>Графік</span>
+            </button>
+            <button class="nav-btn" data-section="settings">
+                <i class="fas fa-cog"></i>
+                <span>Налаштування</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Notification Modal -->
+    <div class="modal" id="notificationModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-bell"></i> Час тренування!</h3>
+                <button class="modal-close" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Доброго ранку! Час для тренування за планом Лунгрена.</p>
+                <div id="modalWorkoutInfo"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="startWorkoutModal">
+                    <i class="fas fa-play"></i> Почати тренування
+                </button>
+                <button class="btn btn-secondary" id="snoozeModal">
+                    <i class="fas fa-clock"></i> Відкласти на 15 хв
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="export.js"></script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('Service Worker registered successfully:', registration);
+                        
+                        // Запит дозволу на сповіщення
+                        if ('Notification' in window && Notification.permission === 'default') {
+                            Notification.requestPermission();
+                        }
+                    })
+                    .catch(error => {
+                        console.log('Service Worker registration failed:', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
